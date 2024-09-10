@@ -1,0 +1,182 @@
+body, html{
+    background-color: #111;
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+    box-sizing: border-box;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+h1{
+    text-align: center;
+    font-size: calc(1vw + 20px);
+    color: #bbb;
+    margin: 18px 0;
+}
+.bulb{
+    color: #bbb;
+    background-color: #333;
+    display: inline-flex;
+    height: 5vw;
+    max-height: 70px;
+    min-height: 40px;
+    width: 5vw;
+    max-width: 70px;
+    min-width: 40px;
+    font-size: calc(12px + 2vw);
+    align-items: center;
+    justify-content: center;
+    border: calc(3px + 0.15vw) solid #666;
+    border-radius: 80px;
+    margin: calc(1% + 4px);
+    font-weight: bold;
+    cursor: pointer;
+}
+.light{
+    border-color: #eeffee;
+    color: white;
+    background: #222222;
+    text-shadow: 0 0 16px #cec, 0 0 20px #cec, 0 0 25px #cec, 0 0 30px #cec;
+    box-shadow: 0 0 3px #ada, 0 0 2px #ada, 0 0 11px #ada, 0 0 8px #ada,0 0 30px #ada, 0 0 40px #ada;
+}
+.lights, .sett, .mre{
+    max-width: 100vw;
+    width: 1200px;
+    text-align: center;
+    margin: 0 auto 15px auto;
+}
+#printed{
+    color: #ccc;
+    font-size: calc(12px + .6vw);
+    word-wrap: break-word;
+    white-space: -moz-pre-wrap;
+    white-space: pre-wrap;
+    padding: 20px;
+    max-width: 100vw;
+    text-align: center;
+}
+#printed:before{
+    content: "Output: ";
+    font-size: calc(12px + .5vw);
+    color: #aaa;
+}
+.sett{
+    width: 100vw;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+.rotor{
+    display: inline-block;
+    background-color: #444;
+    font-weight: bold;
+    padding: 4px 5px;
+    margin: 7px 0;
+    box-sizing: border-box;
+}
+.rotor div{
+    background-color: #222;
+    color: #aaa;
+    padding: 5px;
+    font-size: calc(12px + .7vw);
+    cursor: default;
+}
+.rotor div span.val, .refl .val{
+    color: white;
+}
+.rotor div .sip, .refl .sip{
+    cursor: pointer;
+    color: #ddd;
+    background-color: #191919;
+    padding: 0 5px;
+    border-radius: 1.5px;
+    border: none;
+    outline: none;
+    font-size: calc(12px + .7vw);
+    font-family: monospace;
+    font-weight: bold;
+}
+.rotor .pick{
+    margin-bottom: 4px;
+}
+#rot1 .pick{border-radius: 7px 0 0 0;}
+#rot1 .pos{border-radius: 0 0 0 7px;}
+#rot3 .pick{border-radius: 0 7px 0 0;}
+#rot3 .pos{border-radius: 0 0 7px 0;}
+.pckval::before{
+    content: "Rotor ";
+    color: #bbb;
+}
+.posval::before{
+    content: "Pozice ";
+    color: #bbb;
+}
+#rot1{border-radius: 10px 0 0 10px;}
+#rot3{border-radius: 0 10px 10px 0;}
+*:not(input)::selection{
+    background: rgba(255,255,255,.1);
+}
+input::selection{
+    background: rgba(0,0,0,.25);
+}
+.refl{
+    display: inline-block;
+    background-color: #222;
+    color: #aaa;
+    padding: 7px;
+    border: 4px solid #444;
+    border-radius: 8px;
+    font-size: calc(12px + .7vw);
+    font-weight: bold;
+}
+.refl .val:before{content: "Reflektor UKW-";color: #bababa;}
+.prop{
+    display: inline-block;
+    padding: 8px 8px 8px 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    max-width: 90vw;
+    color: #aaa;
+    background-color: #333;
+    font-size: calc(12px + .7vw);
+    font-weight: bold;
+}
+.prop input{
+    background-color: #666;
+    border: none;
+    color: #ddd;
+    font-size: calc(12px + .7vw);
+    font-family: monospace;
+    padding: 4px 8px;
+    margin-left: 6px;
+    border-radius: 0 3px 3px 0;
+    font-weight: bold;
+    outline: none;
+    text-transform: uppercase;
+}
+.prop input::placeholder{
+    color: #aaa;
+}
+
+
+
+
+@media(max-width: 690px){
+    .lights br{
+        display: none;
+    }
+}
+@media(min-width: 1400px){
+    .bulb{
+        font-size: 45px;
+    }
+    .prop input{
+        border-radius: 5px;
+    }
+}
+@media(max-width: 440px){
+    .rotor div{border-radius: 4px !important;}
+    .rotor{border-radius: 6px !important;}
+}

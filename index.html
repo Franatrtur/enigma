@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--
+Enigma v1.2 by FranaTrtur
+Enigma machine real-time emulator
+
+MIT LICENSE
+
+Copyright (c) 2019 František Artur Čech
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+<meta charset="utf-8">
+<link rel="stylesheet" href="enigma.css"/>
+</head>
+<body>
+<h1 id="nadpis">Moje Enigma</h1>
+<div class="sett">
+    <div class="rotors">
+        <div id="rot1" class="rotor">
+            <div class="pick">
+                <button id="p111" class="sip lf" onclick="m('pck1val');">&lt;</button> <span id="pck1val" class="pckval val">1</span> <button id="p112" class="sip rg" onclick="p('pck1val');">&gt;</button>
+            </div>
+            <div class="pos">
+                <button id="p121" class="sip lf" onclick="m('pos1val')">-</button> <span id="pos1val" class="posval val">A</span> <button id="p122" class="sip rg" onclick="p('pos1val');">+</button>
+            </div>
+        </div>
+        <div id="rot2" class="rotor">
+            <div class="pick">
+                <button id="p211" class="sip lf" onclick="m('pck2val');">&lt;</button> <span id="pck2val" class="pckval val">2</span> <button id="p212" class="sip rg" onclick="p('pck2val');">&gt;</button>
+            </div>
+            <div class="pos">
+                <button id="p221" class="sip lf" onclick="m('pos2val')">-</button> <span id="pos2val" class="posval val">A</span> <button id="p222" class="sip rg" onclick="p('pos2val')">+</button>
+            </div>
+        </div>
+        <div id="rot3" class="rotor">
+            <div class="pick">
+                <button id="p311" class="sip lf" onclick="m('pck3val');">&lt;</button> <span id="pck3val" class="pckval val">3</span> <button id="p312" class="sip rg" onclick="p('pck3val');">&gt;</button>
+            </div>
+            <div class="pos">
+                <button id="p321" class="sip lf" onclick="m('pos3val')">-</button> <span id="pos3val" class="posval val">A</span> <button id="p322" class="sip rg" onclick="p('pos3val')">+</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="lights">
+    <div class="bulb" id="Q">Q</div>
+    <div class="bulb" id="W">W</div>
+    <div class="bulb" id="E">E</div>
+    <div class="bulb" id="R">R</div>
+    <div class="bulb" id="T">T</div>
+    <div class="bulb" id="Z">Z</div>
+    <div class="bulb" id="U">U</div>
+    <div class="bulb" id="I">I</div>
+    <div class="bulb" id="O">O</div>
+    <br>
+    <div class="bulb" id="A">A</div>
+    <div class="bulb" id="S">S</div>
+    <div class="bulb" id="D">D</div>
+    <div class="bulb" id="F">F</div>
+    <div class="bulb" id="G">G</div>
+    <div class="bulb" id="H">H</div>
+    <div class="bulb" id="J">J</div>
+    <div class="bulb" id="K">K</div>
+    <br>
+    <div class="bulb" id="P">P</div>
+    <div class="bulb" id="Y">Y</div>
+    <div class="bulb" id="X">X</div>
+    <div class="bulb" id="C">C</div>
+    <div class="bulb" id="V">V</div>
+    <div class="bulb" id="B">B</div>
+    <div class="bulb" id="N">N</div>
+    <div class="bulb" id="M">M</div>
+    <div class="bulb" id="L">L</div>
+</div>
+<div class="mre">
+    <div class="refl">
+        <button id="p41" class="sip lf" onclick="rfs(false)">&lt;</button> <span id="refval" class="val">A</span> <button id="p42" class="sip rg" onclick="rfs(true)">&gt;</button>
+    </div>
+    <br>
+    <div class="prop">
+        Propojovací deska: <wbr><input id="plugb" type="text" placeholder="např. AH RG CV" autocomplete="off" maxlength="38" size="26">
+    </div>
+</div>
+<div id="printed"></div>
+<script src="enigma.js"></script>
+<script defer>
+var last, tmo;
+var svit = function(el){
+    dd(el.id).classList.add("light");
+    if(typeof last != "undefined" && last.id != el.id)
+        dd(last.id).classList.remove("light");
+    last = el;
+    click.play();
+    clearTimeout(tmo);
+    tmo = setTimeout(function(){
+        dd(el.id).classList.remove("light");
+    }, 1250);
+}
+function dd(r){return document.getElementById(r);}
+window.povoleno = true;
+document.addEventListener("keypress", function(e){
+    if(Enigma.alphabet.indexOf(e.key.toUpperCase()) > -1 && window.povoleno == true && document.activeElement.id != "plugb"){
+        sifra(e.key.toUpperCase());
+        window.povoleno = false;
+        setTimeout(function(){
+            window.povoleno = true;
+        }, 150);
+    }
+    else if(document.activeElement.id == "plugb"){
+        setTimeout(function(){
+        dd("plugb").value = dd("plugb").value.toUpperCase();
+            while(Enigma.alphabet.indexOf(dd("plugb").value.substr(-1)) < 0 && dd("plugb").value.substr(-1) != " " && dd("plugb").value.length > 0)
+                dd("plugb").value = dd("plugb").value.substring(0, dd("plugb").value.length - 1);
+        }, 5);
+    }
+});
+for(var pism = 0; pism < Enigma.alphabet.length; pism++)
+    dd(Enigma.alphabet.charAt(pism)).addEventListener("click", function(e){sifra(this.id);return false;});
+var click = new Audio("click1.wav");
+var click2 = new Audio("click2.ogg");
+function sifra(pism){
+    var cr = Enigma.encodeChar(pism.toUpperCase());
+    svit(dd(cr));
+    dd("printed").innerHTML += cr;
+    dd("printed").innerHTML = dd("printed").innerHTML.split(" ").join("").match(/.{1,4}/g).join(" ");
+    ge();
+}
+var over = function(idx, max){return (max + idx % max) % max;}
+function se(){
+    dd("printed").innerHTML = "";
+Enigma.setSettings([dd("pck3val").innerHTML,Enigma.alphabet.indexOf(dd("pos3val").innerHTML)],
+[dd("pck2val").innerHTML,Enigma.alphabet.indexOf(dd("pos2val").innerHTML)],
+[dd("pck1val").innerHTML,Enigma.alphabet.indexOf(dd("pos1val").innerHTML)],
+dd("plugb").value.split(" "),
+Enigma.alphabet.indexOf(dd("refval").innerHTML)
+);
+}
+function ge(){
+    dd("pos1val").innerHTML = Enigma.alphabet.charAt(Enigma.getSettings().rotor3[1]);
+    dd("pos2val").innerHTML = Enigma.alphabet.charAt(Enigma.getSettings().rotor2[1]);
+    dd("pos3val").innerHTML = Enigma.alphabet.charAt(Enigma.getSettings().rotor1[1]);
+}
+function m(el){
+    if(!isNaN(parseInt(dd(el).innerHTML))){
+        dd(el).innerHTML = over(parseInt(dd(el).innerHTML) - 2, 5) + 1;
+        click2.pause();
+        click2.currentTime = 0;
+        click2.play();
+    }
+    else{
+        dd(el).innerHTML = Enigma.alphabet.charAt(over(Enigma.alphabet.indexOf(dd(el).innerHTML) - 1, Enigma.alphabet.length));
+        click.pause();
+        click.currentTime = 0;
+        click.play();
+    }
+    se();
+
+}
+function p(el){
+    if(!isNaN(parseInt(dd(el).innerHTML))){
+        dd(el).innerHTML = (parseInt(dd(el).innerHTML)) % 5 + 1;
+        click2.pause();
+        click2.currentTime = 0;
+        click2.play();
+    }
+    else{
+        dd(el).innerHTML = Enigma.alphabet.charAt(over(Enigma.alphabet.indexOf(dd(el).innerHTML) + 1, Enigma.alphabet.length));
+        click.pause();
+        click.currentTime = 0;
+        click.play();
+    }
+    se();
+}
+function rfs(pls){
+    dd("refval").innerHTML = Enigma.alphabet.charAt(over(Enigma.alphabet.indexOf(dd("refval").innerHTML) + (!!pls ? 1 : -1), 3));
+    click2.pause();
+    click2.currentTime = 0;
+    click2.play();
+    se();
+}
+dd("plugb").addEventListener("change", function(){se();});
+se();
+</script>
+</body>
+</html>
